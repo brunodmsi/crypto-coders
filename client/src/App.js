@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import getWeb3 from "./getWeb3";
 import CryptoCodersContract from "./contracts/CryptoCoders.json";
@@ -59,7 +59,7 @@ const App = () => {
     });
   }, []);
 
-  const executeMint = async () => {
+  const executeMint = useCallback(async () => {
     if (!contract) {
       return;
     }
@@ -73,8 +73,9 @@ const App = () => {
       }
 
       setLoadedCoders(oldLoadedCoders => [...oldLoadedCoders, coder]);
+      setCoder('');
     });
-  };
+  }, [contract, coder, account]);
 
   return (
     <div className="h-screen">
@@ -92,6 +93,7 @@ const App = () => {
 
           <input 
             type="text" 
+            value={coder}
             placeholder="e.g cryptocoders"
             className="p-2 border border-gray-200 rounded-md"
             onChange={(e) => setCoder(e.target.value)}
@@ -106,7 +108,7 @@ const App = () => {
 
           <div className="grid grid-flow-row grid-cols-3">
             {loadedCoders.map(loadedCoder => (
-              <div>
+              <div key={loadedCoder}>
                 <img src={getAvatarUrl(loadedCoder)} alt={loadedCoder} />
                 <p>{loadedCoder}</p>
               </div>
