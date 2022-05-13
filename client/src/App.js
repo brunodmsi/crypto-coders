@@ -1,12 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
-// import CryptoCodersContract from "./contracts/CryptoCoders.json";
-// import getWeb3 from "./getWeb3";
+import getWeb3 from "./getWeb3";
+import CryptoCodersContract from "./contracts/CryptoCoders.json";
 
 import { getAvatarUrl } from './services/dicebear';
 
 const App = () => {
   const [coder, setCoder] = useState('');
+  const [contract, setContract] = useState(null);
+  const [account, setAccount] = useState('');
+
+  const loadWeb3Account = async (web3) => {
+    const accounts = await web3.eth.getAccounts();
+    if (!accounts) {
+      return;
+    }
+
+    return accounts[0];
+  }
+
+  const loadWeb3Contract = async (web3) => {
+    const networkId = await web3.eth.net.getId();
+    const networkData = CryptoCodersContract.networks[networkId];
+  
+    if (!networkData) {
+      return;
+    }
+
+    const abi = CryptoCodersContract.abi;
+    const address = networkData.address;
+    const contract = new web3.eth.Contract(abi, address);
+
+    return contract;
+  };
+
+  useEffect(() => {
+    getWeb3().then(async (web3) => {
+      const contract = await loadWeb3Contract(web3);
+      const account = await loadWeb3Account(web3);
+
+      setAccount(account);
+      setContract(contract);
+    });
+  }, []);
 
   const executeMint = () => {
     console.log(coder);
