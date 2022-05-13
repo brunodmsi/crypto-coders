@@ -9,6 +9,19 @@ const App = () => {
   const [coder, setCoder] = useState('');
   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState('');
+  const [loadedCoders, setLoadedCoders] = useState([]);
+
+  const loadNfts = async (contract) => {
+    const totalSupply = await contract.methods.totalSupply().call();
+  
+    const nfts = new Set();
+    for (let i = 0; i < totalSupply; i += 1) {
+      let currCoder = await contract.methods.coders(i).call();
+      nfts.add(currCoder);
+    }
+
+    setLoadedCoders(nfts);
+  }
 
   const loadWeb3Account = async (web3) => {
     const accounts = await web3.eth.getAccounts();
@@ -41,6 +54,8 @@ const App = () => {
 
       setAccount(account);
       setContract(contract);
+
+      await loadNfts(contract);
     });
   }, []);
 
