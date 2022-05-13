@@ -14,10 +14,10 @@ const App = () => {
   const loadNfts = async (contract) => {
     const totalSupply = await contract.methods.totalSupply().call();
   
-    const nfts = new Set();
+    const nfts = [];
     for (let i = 0; i < totalSupply; i += 1) {
       let currCoder = await contract.methods.coders(i).call();
-      nfts.add(currCoder);
+      nfts.push(currCoder);
     }
 
     setLoadedCoders(nfts);
@@ -103,6 +103,15 @@ const App = () => {
           >
             Mint
           </button>
+
+          <div className="grid grid-flow-row grid-cols-3">
+            {loadedCoders.map(loadedCoder => (
+              <div>
+                <img src={getAvatarUrl(loadedCoder)} alt={loadedCoder} />
+                <p>{loadedCoder}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
