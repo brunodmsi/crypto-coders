@@ -11,6 +11,7 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
 	constructor() ERC721("CryptoCoders", "CCD") {}
 
 	function mint(string memory coder) public {
+		require(!_coderExists[coder]);
 		coders.push(coder);
 		uint _id = coders.length - 1;	
 		_mint(msg.sender, _id);
