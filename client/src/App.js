@@ -59,8 +59,21 @@ const App = () => {
     });
   }, []);
 
-  const executeMint = () => {
-    console.log(coder);
+  const executeMint = async () => {
+    if (!contract) {
+      return;
+    }
+
+    await contract.methods.mint(coder).send({
+      from: account,
+    }, (error) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      setLoadedCoders(oldLoadedCoders => [...oldLoadedCoders, coder]);
+    });
   };
 
   return (
