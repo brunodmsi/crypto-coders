@@ -50,7 +50,7 @@ const App = () => {
 
   return (
     <div className="h-screen">
-      <Navbar />
+      <Navbar account={account} />
 
       <div className="flex flex-col justify-center items-center gap-3">
         <img src={getAvatarUrl('cryptocoders')} alt="cryptocoders avatars" width={72} /> 
